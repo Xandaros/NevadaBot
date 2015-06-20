@@ -15,7 +15,6 @@ import           Safe
 import           System.IO
 
 import           Types
-import           IRCServer
 import           NevadaBot
 
 activeChannels :: [Channel]
@@ -32,7 +31,7 @@ greeter :: Plugin
 greeter = Plugin [handler] meta
     where
         meta = PluginMeta "Greeter" "" "Xandaros" (Version 0 1 0)
-        handler = TempHandler $ \(IRCMessage prefix (IRCCommand cmd args)) ->
+        handler = TempHandler $ \(IRCMessage prefix (UNKNOWNMSG cmd args)) ->
             when (cmd == "JOIN") $ do
                 let nick = T.unpack . fromMaybe "" $ preNickname <$> prefix
                 let channel = T.unpack $ atDef "" args 0
@@ -49,13 +48,13 @@ testHandler = TempHandler $ \command ->
 
 joinHandler :: Handler
 joinHandler = TempHandler $ \IRCMessage{..} -> do
-    let IRCCommand cmd args = command
+    let UNKNOWNMSG cmd args = command
     when (cmd == "376") $
             joinChannel "#XanTest"
 
 pingHandler :: Handler
 pingHandler = TempHandler $ \IRCMessage{..} -> do
-    let IRCCommand cmd args = command
+    let UNKNOWNMSG cmd args = command
     when (cmd == "PING") $
         rawSend $ "PONG" ++ (T.unpack . (" "<>) $ atDef "" args 0)
 

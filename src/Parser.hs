@@ -73,7 +73,7 @@ command = do
         many (char ' ' <|> char ':' <|> nospclrfcl)
     let argsf  = take 14 args ++ [unwords . drop 14 $ args]
     let argsf' = argsf ++ [trailing]
-    return $ IRCCommand (T.pack command) (T.pack <$> filter (/="") argsf')
+    return $ UNKNOWNMSG (T.pack command) (T.pack <$> filter (/="") argsf')
 
 nospclrfcl :: Parser Char
 nospclrfcl = noneOf "\0 \r\n:"
